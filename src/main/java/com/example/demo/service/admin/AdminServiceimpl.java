@@ -7,6 +7,8 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AdminServiceimpl implements AdminService {
 
@@ -16,5 +18,21 @@ public class AdminServiceimpl implements AdminService {
     @Override
     public Products saveProduct(Products product) {
         return productRepository.save(product);
+    }
+
+    @Override
+    public List<Products> getAllProducts() {
+        return productRepository.findAll();
+
+    }
+
+    @Override
+    public Products updateProduct(Products product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
     }
 }

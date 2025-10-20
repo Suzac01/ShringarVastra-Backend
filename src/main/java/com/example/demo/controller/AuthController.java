@@ -1,8 +1,17 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.auth.JwtResponse;
+import com.example.demo.dto.auth.LoginRequest;
+import com.example.demo.dto.auth.RegisterRequest;
+import com.example.demo.dto.auth.googleRegister.Google;
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
+import com.example.demo.service.admin.JwtUtil;
 import com.example.demo.service.authentication.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,21 +23,82 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+    private JwtUtil jwtUtil;
+
+
+    @Autowired
+    public AuthController(AuthService authService, JwtUtil jwtUtil) {
+        this.authService = authService;
+        this.jwtUtil = jwtUtil;
+    }
 
     @PostMapping("/register")
-    public User createUser(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            User newUser = new User();
+            String fullName = request.getFirstName() + " " + request.getLastName();
+            newUser.setName(fullName);
+            newUser.setEmail(request.getEmail());
+            newUser.setPassword(request.getPassword());
+            newUser.setRole(Role.ROLE_CLIENT);
 
-        return authService.saveUser(user);
+            User savedUser = authService.saveUser(newUser);
+            return ResponseEntity.ok(savedUser);
+        }
+        catch (DataIntegrityViolationException e) {
+            // This happens when email already exists (unique constraint fails)
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Email already exists");
+        }
+        catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong");
+        }
     }
+
+
 
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        return authService.saveUser(user);
+        // 🔹 Log incoming request
+        System.out.println("Login attempt:");
+        System.out.println("Email: " + request.getEmail());
+        System.out.println("Password: " + request.getPassword());
+
+        User user = authService.login(request.getEmail(), request.getPassword());
+
+        if (user == null) {
+            System.out.println("Login failed: invalid credentials for " + request.getEmail());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        JwtResponse response = new JwtResponse(token, user.getRole(), user.getName());
+
+        System.out.println("Login successful for user: " + user.getEmail());
+
+        return ResponseEntity.ok(response);
     }
 
+    // AuthController.java (add below existing endpoints)
+    @PostMapping("/google")
+    public ResponseEntity<?> loginWithGoogle(@RequestBody Google google) {
+        User user = authService.loginOrRegister(google); // use instance, not class
 
+        String token = jwtUtil.generateToken(user.getEmail());
+        JwtResponse response = new JwtResponse(token, user.getRole(), user.getName());
 
-
-
+        return ResponseEntity.ok(response);
+    }
 }
+
+
+
+
+
+
+
