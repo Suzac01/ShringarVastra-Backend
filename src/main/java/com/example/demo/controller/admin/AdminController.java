@@ -20,13 +20,20 @@ public class AdminController {
     private AdminService adminService;
 
     // CREATE - Add a new product using DTO
+//    @PostMapping("/add")
+//    public ResponseEntity<Products> addProduct(@Valid @RequestBody ProductRequest request) {
+//        Products product = new Products();
+//        product.setProductName(request.getName());
+//        product.setProductPrice(request.getPrice());
+//
+//        Products savedProduct = adminService.saveProduct(product);
+//        return ResponseEntity.ok(savedProduct);
+//    }
+
+    // CREATE - Add a new product
     @PostMapping("/add")
     public ResponseEntity<Products> addProduct(@Valid @RequestBody ProductRequest request) {
-        Products product = new Products();
-        product.setProductName(request.getName());
-        product.setProductPrice(request.getPrice());
-
-        Products savedProduct = adminService.saveProduct(product);
+        Products savedProduct = adminService.saveProduct(request);
         return ResponseEntity.ok(savedProduct);
     }
 
@@ -48,7 +55,6 @@ public class AdminController {
         Products updatedProduct = adminService.updateProduct(product);
         return ResponseEntity.ok(updatedProduct);
     }
-
 
     // DELETE - Delete a product by ID
     @DeleteMapping("/delete/{id}")

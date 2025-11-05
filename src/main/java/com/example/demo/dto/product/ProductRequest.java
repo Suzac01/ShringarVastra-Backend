@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ProductRequest {
 
-    private Long id; // ✅ add this for updates
+    private Long id;
     private String name;
     private Double price;
     private String description;
@@ -19,6 +19,9 @@ public class ProductRequest {
     private Integer reviewsCount;
     private String sku;
     private List<String> images;
+
+    private String brand;
+    private Double discount;
 
     public ProductRequest() {}
 
@@ -41,6 +44,8 @@ public class ProductRequest {
         this.reviewsCount = reviewsCount;
         this.sku = sku;
         this.images = images;
+        this.brand = brand;
+        this.discount = discount;
     }
 
     // ✅ Getters and Setters
@@ -88,6 +93,12 @@ public class ProductRequest {
 
     public List<String> getImages() { return images; }
     public void setImages(List<String> images) { this.images = images; }
+
+    public String getBrand() { return brand; }
+    public void setBrand(String brand) { this.brand = brand; }
+
+    public Double getDiscount() { return discount; }
+    public void setDiscount(Double discount) { this.discount = discount; }
 
     @Override
     public String toString() {

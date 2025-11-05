@@ -30,6 +30,10 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
+    @Column(name = "provider")
+    private String provider; // Example values: "LOCAL", "GOOGLE"
+
+
     @JsonIgnore
     private String password;
 
@@ -39,6 +43,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Role is required")
     private Role role;
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
 
     // --- UserDetails overrides ---
     @Override
