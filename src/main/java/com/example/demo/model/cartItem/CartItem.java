@@ -25,7 +25,9 @@ public class CartItem {
     private int quantity;
 
     private String productName;
+
     private String imageUrl;
+
     private double price;
 
     @Column(name = "ordered")

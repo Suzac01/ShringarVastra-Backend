@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 //add edit update delete product from admin.
-
 @RestController
 @RequestMapping("/admin/product")
 public class AdminController {

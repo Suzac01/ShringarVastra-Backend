@@ -32,56 +32,98 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        try {
-            User newUser = new User();
-            String fullName = request.getFirstName() + " " + request.getLastName();
-            newUser.setName(fullName);
-            newUser.setEmail(request.getEmail());
-            newUser.setPassword(request.getPassword());
-            newUser.setRole(Role.ROLE_CLIENT);
-
-            User savedUser = authService.saveUser(newUser);
-            return ResponseEntity.ok(savedUser);
-        }
-        catch (DataIntegrityViolationException e) {
-            // This happens when email already exists (unique constraint fails)
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body("Email already exists");
-        }
-        catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Something went wrong");
-        }
-    }
-
-
+//    @PostMapping("/register")
+//    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+//        try {
+//            User newUser = new User();
+//            String fullName = request.getFirstName() + " " + request.getLastName();
+//            newUser.setName(fullName);
+//            newUser.setEmail(request.getEmail());
+//            newUser.setPassword(request.getPassword());
+//            newUser.setRole(Role.ROLE_CLIENT);
+//
+//            User savedUser = authService.saveUser(newUser);
+//            return ResponseEntity.ok(savedUser);
+//        }
+//        catch (DataIntegrityViolationException e) {
+//            // This happens when email already exists (unique constraint fails)
+//            return ResponseEntity
+//                    .status(HttpStatus.CONFLICT)
+//                    .body("Email already exists");
+//        }
+//        catch (Exception e) {
+//            return ResponseEntity
+//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Something went wrong");
+//        }
+//    }
+//
+//
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+//
+//        // 🔹 Log incoming request
+//        System.out.println("Login attempt:");
+//        System.out.println("Email: " + request.getEmail());
+//        System.out.println("Password: " + request.getPassword());
+//
+//        User user = authService.login(request.getEmail(), request.getPassword());
+//
+//        if (user == null) {
+//            System.out.println("Login failed: invalid credentials for " + request.getEmail());
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//        }
+//
+//        String token = jwtUtil.generateToken(user.getEmail());
+//
+//        JwtResponse response = new JwtResponse(token, user.getRole(), user.getName());
+//
+//        System.out.println("Login successful for user: " + user.getEmail());
+//
+//        return ResponseEntity.ok(response);
+//    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-
-        // 🔹 Log incoming request
-        System.out.println("Login attempt:");
-        System.out.println("Email: " + request.getEmail());
-        System.out.println("Password: " + request.getPassword());
-
         User user = authService.login(request.getEmail(), request.getPassword());
-
         if (user == null) {
-            System.out.println("Login failed: invalid credentials for " + request.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+        return ResponseEntity.ok(user);
+    }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+//        User user = authService.login(request.getEmail(), request.getPassword());
+//        if (user == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//        }
+//        return ResponseEntity.ok(user);
+//    }
 
-        JwtResponse response = new JwtResponse(token, user.getRole(), user.getName());
+//    @PostMapping("/register")
+//    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+//        User newUser = new User();
+//        newUser.setName(request.getFirstName() + " " + request.getLastName());
+//        newUser.setEmail(request.getEmail());
+//        newUser.setPassword(request.getPassword());
+//        newUser.setRole(Role.ROLE_CLIENT);
+//
+//        User savedUser = authService.saveUser(newUser);
+//        return ResponseEntity.ok(savedUser);
+//    }
 
-        System.out.println("Login successful for user: " + user.getEmail());
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        User newUser = new User();
+        newUser.setName(request.getFirstName() + " " + request.getLastName());
+        newUser.setEmail(request.getEmail());
+        newUser.setPassword(request.getPassword());
+        newUser.setRole(Role.ROLE_CLIENT);
 
-        return ResponseEntity.ok(response);
+        User savedUser = authService.saveUser(newUser);
+        return ResponseEntity.ok(savedUser);
     }
 
     // AuthController.java (add below existing endpoints)
