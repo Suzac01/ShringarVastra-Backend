@@ -18,7 +18,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    // CREATE - Add a new product using DTO
+
 //    @PostMapping("/add")
 //    public ResponseEntity<Products> addProduct(@Valid @RequestBody ProductRequest request) {
 //        Products product = new Products();
@@ -29,7 +29,7 @@ public class AdminController {
 //        return ResponseEntity.ok(savedProduct);
 //    }
 
-    // CREATE - Add a new product
+
 
     @PostMapping("/add")
     public ResponseEntity<Products> addProduct(@Valid @RequestBody ProductRequest request) {
