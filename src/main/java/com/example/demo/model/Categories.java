@@ -18,10 +18,21 @@ public class Categories {
     @Column(length = 500)
     private String description;
 
-    // Bi-directional mapping (optional)
+    @Column
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Products> products;
+
 
     public Categories() {}
 
@@ -29,6 +40,8 @@ public class Categories {
         this.categoryName = categoryName;
         this.description = description;
     }
+
+
 
     // Getters and Setters
     public Long getId() {
