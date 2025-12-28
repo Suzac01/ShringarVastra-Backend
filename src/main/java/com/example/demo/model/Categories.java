@@ -21,13 +21,6 @@ public class Categories {
     @Column
     private String image;
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -36,14 +29,20 @@ public class Categories {
 
     public Categories() {}
 
-    public Categories(String categoryName, String description) {
+    public Categories(String categoryName, String description, String image) {
         this.categoryName = categoryName;
         this.description = description;
+        this.image = image;
     }
 
+    public String getImage() {
+        return image;
+    }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
