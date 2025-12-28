@@ -40,7 +40,7 @@ public class AdminCategoryController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Categories> saveCategory(
             @RequestPart("category") @Valid CategoryRequest categoryRequest,
             @RequestPart("image") MultipartFile imageFile) throws IOException {
