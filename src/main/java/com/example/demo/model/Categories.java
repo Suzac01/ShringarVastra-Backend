@@ -18,14 +18,13 @@ public class Categories {
     @Column(length = 500)
     private String description;
 
-    @Column
+    // Store image file name or URL; actual file is uploaded separately
+    @Column(name = "image")
     private String image;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Products> products;
-
 
     public Categories() {}
 
@@ -35,13 +34,7 @@ public class Categories {
         this.image = image;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
+    // --- Getters and Setters ---
 
     public Long getId() {
         return id;
@@ -65,6 +58,14 @@ public class Categories {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public List<Products> getProducts() {

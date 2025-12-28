@@ -4,7 +4,9 @@ import com.example.demo.dto.CategoryRequest.CategoryRequest;
 import com.example.demo.dto.product.ProductRequest;
 import com.example.demo.model.Categories;
 import com.example.demo.model.Products;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface AdminService {
@@ -18,6 +20,5 @@ public interface AdminService {
 
     void deleteProduct(Long id); // Delete by product ID.
 
-    Categories saveCategory(CategoryRequest request);
-
+    Categories saveCategory(CategoryRequest request, MultipartFile imageFile) throws IOException;
 }
