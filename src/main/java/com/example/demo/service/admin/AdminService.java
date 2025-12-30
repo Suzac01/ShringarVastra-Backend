@@ -21,4 +21,10 @@ public interface AdminService {
     void deleteProduct(Long id); // Delete by product ID.
 
     Categories saveCategory(CategoryRequest request, MultipartFile imageFile) throws IOException;
+
+    List<Categories> getAllCategories();
+
+    Categories updateCategory(Categories category, MultipartFile imageFile) throws IOException;
+
+    void deleteCategory(Long id);
 }
