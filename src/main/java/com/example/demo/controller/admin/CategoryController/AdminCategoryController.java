@@ -88,6 +88,8 @@ public class AdminCategoryController {
     // ✅ GET ALL CATEGORIES
     @GetMapping("/all")
     public ResponseEntity<List<Categories>> getAllCategories() {
+        System.out.println("NEW METHOD: getAllCategories");
         return ResponseEntity.ok(adminService.getAllCategories());
+
     }
 }
