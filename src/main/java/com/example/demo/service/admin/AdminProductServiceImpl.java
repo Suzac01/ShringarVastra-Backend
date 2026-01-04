@@ -450,12 +450,18 @@ public class AdminProductServiceImpl implements AdminService {
     }
 
     private void mapProductDtoToEntity(ProductRequest request, Products product) {
-        product.setProductName(request.getName());
+        // Use correct getter methods based on DTO field names
+        product.setProductName(request.getName()); // Changed from getProductName() to getName()
         product.setSku(request.getSku());
-        product.setProductPrice(request.getPrice());
+        product.setProductPrice(request.getPrice()); // Changed from getProductPrice() to getPrice()
         product.setBrand(request.getBrand());
         product.setStatus(request.getStatus());
         product.setDescription(request.getDescription());
+
+        // Handle images - assuming you store first image URL in product_image
+        if (request.getImages() != null && !request.getImages().isEmpty()) {
+            product.setProductImage(request.getImages().get(0)); // Store first image
+        }
 
         product.setStockQuantity(request.getStockQuantity() != null ? request.getStockQuantity() : 0);
         product.setWeight(request.getWeight());
