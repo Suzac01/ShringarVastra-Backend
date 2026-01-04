@@ -158,6 +158,7 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.dto.product.ProductRequest;
 import com.example.demo.dto.product.ProductResponse;
+import com.example.demo.model.Products;
 import com.example.demo.service.admin.AdminService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,12 +185,12 @@ public class AdminController {
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
-//    // READ - Get all products
-//    @GetMapping("/all")
-//    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-//        List<ProductResponse> products = adminService.getAllProducts();
-//        return ResponseEntity.ok(products);
-//    }
+    // READ - Get all products
+    @GetMapping("/all")
+    public ResponseEntity<List<Products>> getAllProducts() {
+        List<Products> products = adminService.getAllProducts();
+        return ResponseEntity.ok(products);
+    }
 
     // READ - Get product by ID
     @GetMapping("/{id}")
