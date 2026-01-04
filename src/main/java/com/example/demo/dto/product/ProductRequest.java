@@ -1,123 +1,52 @@
 package com.example.demo.dto.product;
 
+import jakarta.validation.constraints.*;
+import lombok.Data;
 import java.util.List;
 
+@Data
 public class ProductRequest {
 
-    private Long id;
+    // From frontend: name, sku, price, brand, status, description
+    @NotBlank(message = "Product name is required")
+    @Size(max = 255, message = "Product name cannot exceed 255 characters")
     private String name;
-    private Double price;
-    private String description;
-    private Integer categoryId;
-    private String collection;
-    private List<String> tags;
-    private String vendor;
-    private String status;
-    private Double weight;
-    private Integer stockQuantity;
-    private Double rating;
-    private Integer reviewsCount;
+
+    @NotBlank(message = "SKU is required")
+    @Size(max = 100, message = "SKU cannot exceed 100 characters")
     private String sku;
+
+    @NotNull(message = "Price is required")
+    @Positive(message = "Price must be greater than 0")
+    private Double price;
+
+    @Size(max = 255, message = "Brand cannot exceed 255 characters")
+    private String brand;
+
+    @NotBlank(message = "Status is required")
+    private String status; // ACTIVE, INACTIVE, DRAFT, OUT_OF_STOCK
+
+    @NotBlank(message = "Description is required")
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
+    private String description;
+
+    // From frontend: category (but in DB it's category_id)
+    @NotNull(message = "Category ID is required")
+    private Long categoryId;
+
+    // From frontend: tags, images
+    private List<String> tags;
+
+    @NotNull(message = "At least one image is required")
+    @Size(min = 1, message = "At least one image is required")
     private List<String> images;
 
-    private String brand;
+    // Optional fields
+    private Integer stockQuantity;
+    private Double weight;
+    private Double rating;
+    private Integer reviewsCount;
     private Double discount;
-
-    public ProductRequest() {}
-
-    public ProductRequest(Long id, String name, Double price, String description, Integer categoryId, String collection,
-                          List<String> tags, String vendor, String status, Double weight,
-                          Integer stockQuantity, Double rating, Integer reviewsCount,
-                          String sku, List<String> images) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.categoryId = categoryId;
-        this.collection = collection;
-        this.tags = tags;
-        this.vendor = vendor;
-        this.status = status;
-        this.weight = weight;
-        this.stockQuantity = stockQuantity;
-        this.rating = rating;
-        this.reviewsCount = reviewsCount;
-        this.sku = sku;
-        this.images = images;
-        this.brand = brand;
-        this.discount = discount;
-    }
-
-    // ✅ Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public Double getPrice() { return price; }
-    public void setPrice(Double price) { this.price = price; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public Integer getCategoryId() { return categoryId; }
-    public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
-
-    public String getCollection() { return collection; }
-    public void setCollection(String collection) { this.collection = collection; }
-
-    public List<String> getTags() { return tags; }
-    public void setTags(List<String> tags) { this.tags = tags; }
-
-    public String getVendor() { return vendor; }
-    public void setVendor(String vendor) { this.vendor = vendor; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public Double getWeight() { return weight; }
-    public void setWeight(Double weight) { this.weight = weight; }
-
-    public Integer getStockQuantity() { return stockQuantity; }
-    public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
-
-    public Double getRating() { return rating; }
-    public void setRating(Double rating) { this.rating = rating; }
-
-    public Integer getReviewsCount() { return reviewsCount; }
-    public void setReviewsCount(Integer reviewsCount) { this.reviewsCount = reviewsCount; }
-
-    public String getSku() { return sku; }
-    public void setSku(String sku) { this.sku = sku; }
-
-    public List<String> getImages() { return images; }
-    public void setImages(List<String> images) { this.images = images; }
-
-    public String getBrand() { return brand; }
-    public void setBrand(String brand) { this.brand = brand; }
-
-    public Double getDiscount() { return discount; }
-    public void setDiscount(Double discount) { this.discount = discount; }
-
-    @Override
-    public String toString() {
-        return "ProductRequest{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", description='" + description + '\'' +
-                ", categoryId=" + categoryId +
-                ", collection='" + collection + '\'' +
-                ", tags=" + tags +
-                ", vendor='" + vendor + '\'' +
-                ", status='" + status + '\'' +
-                ", weight=" + weight +
-                ", stockQuantity=" + stockQuantity +
-                ", rating=" + rating +
-                ", reviewsCount=" + reviewsCount +
-                ", sku='" + sku + '\'' +
-                ", images=" + images +
-                '}';
-    }
+    private String dimensions;
+    private Boolean isFeatured;
 }

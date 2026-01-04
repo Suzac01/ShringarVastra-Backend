@@ -16,9 +16,7 @@ public class AdminOrderController {
     @Autowired
     private AdminOrderService adminOrderService;
 
-    /**
-     * Create an order manually (e.g., for testing or admin input)
-     */
+
     @PostMapping("/create")
     public ResponseEntity<String> createOrder(
             @RequestBody OrderRequestDto orderRequest,
@@ -27,9 +25,6 @@ public class AdminOrderController {
         return ResponseEntity.ok("Order created successfully.");
     }
 
-    /**
-     * View all orders placed by a specific client
-     */
     @GetMapping("/clientOrders")
     public ResponseEntity<List<OrderResponseDto>> getOrdersByClientEmail(
             @RequestParam String clientEmail) {
@@ -37,9 +32,6 @@ public class AdminOrderController {
         return ResponseEntity.ok(orders);
     }
 
-    /**
-     * View full details of a specific order made by a client
-     */
     @GetMapping("/details/{orderId}")
     public ResponseEntity<OrderDetailsDto> getOrderDetails(
             @PathVariable Long orderId,
@@ -47,10 +39,6 @@ public class AdminOrderController {
         OrderDetailsDto details = adminOrderService.getOrderDetails(orderId, clientEmail);
         return ResponseEntity.ok(details);
     }
-
-    /**
-     * Cancel an order made by a client
-     */
 
     @PutMapping("/cancel/{orderId}")
     public ResponseEntity<String> cancelOrder(

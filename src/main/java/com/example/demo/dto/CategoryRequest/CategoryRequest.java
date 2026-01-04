@@ -62,6 +62,7 @@
 package com.example.demo.dto.CategoryRequest;
 
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 
 public class CategoryRequest {
 
@@ -69,6 +70,16 @@ public class CategoryRequest {
     private String categoryName;
 
     private String description;
+
+    private MultipartFile image;
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
+    }
 
     // getters & setters
     public String getCategoryName() {
