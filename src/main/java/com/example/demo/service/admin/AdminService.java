@@ -60,7 +60,7 @@ public interface AdminService {
     ProductResponse deleteProductImage(Long productId, String imageUrl);
 
     // Category operations
-    Categories saveCategory(CategoryRequest request, MultipartFile imageFile) throws IOException;
+    Categories saveCategory(CategoryRequest request) throws IOException;
     List<Categories> getAllCategories();
     Categories getCategoryById(Long id);
     Categories updateCategory(Long id, CategoryRequest request, MultipartFile imageFile) throws IOException;

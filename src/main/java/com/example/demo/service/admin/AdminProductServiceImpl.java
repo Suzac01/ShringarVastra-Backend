@@ -529,11 +529,12 @@ public class AdminProductServiceImpl implements AdminService {
 
 
     @Override
-    public Categories saveCategory(CategoryRequest request, MultipartFile imageFile) throws IOException {
+    public Categories saveCategory(CategoryRequest request) throws IOException {
         Categories category = new Categories();
         category.setCategoryName(request.getCategoryName());
         category.setDescription(request.getDescription());
 
+        MultipartFile imageFile = request.getImage();
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = saveCategoryImage(imageFile);
             category.setImage(imageUrl);

@@ -77,11 +77,9 @@ public class AdminCategoryController {
     // ✅ ADD CATEGORY
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Categories> addCategory(
-            @Valid @ModelAttribute CategoryRequest request,
-            @RequestParam(value = "image", required = false) MultipartFile image
-    ) throws IOException {
+            @Valid @ModelAttribute CategoryRequest request) throws IOException {
 
-        Categories saved = adminService.saveCategory(request, image);
+        Categories saved = adminService.saveCategory(request);
         return ResponseEntity.ok(saved);
     }
 
