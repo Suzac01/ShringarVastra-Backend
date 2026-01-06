@@ -16,7 +16,7 @@ public class ProductResponse {
     private String description;
     private Categories category;
     private List<String> tags;
-    private List<String> productImage; // This was missing in your code
+    private List<String> productImage;
     private Integer stockQuantity;
     private Double weight;
     private String dimensions;
