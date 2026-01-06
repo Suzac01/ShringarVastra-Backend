@@ -59,6 +59,7 @@ public class WebConfig {
                 // Serve uploaded files from the uploads directory
                 registry.addResourceHandler("/uploads/**")
                         .addResourceLocations("file:uploads/")
+                        .addResourceLocations("file:uploads/categories/") // Categories subfolder
                         .setCachePeriod(3600); // Cache for 1 hour
 
                 // Optional: For Swagger UI if you're using it
