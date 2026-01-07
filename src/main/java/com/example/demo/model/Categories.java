@@ -18,6 +18,9 @@ public class Categories {
     @Column(length = 500)
     private String description;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // Bi-directional mapping (optional)
     @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -33,6 +36,14 @@ public class Categories {
     // Getters and Setters
     public Long getId() {
         return id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setId(Long id) {

@@ -37,6 +37,9 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
+//    @Column(nullable = false)
+//    private boolean active = true;
+
     @Column(unique = true)
     private String appwriteId; // store Appwrite/Google user ID
 
@@ -83,6 +86,14 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+//    public boolean isActive() {
+//        return active;
+//    }
+//
+//    public void setActive(boolean active) {
+//        this.active = active;
+//    }
 
     // --- toString for logging ---
     @Override

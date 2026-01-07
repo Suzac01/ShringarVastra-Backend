@@ -1,11 +1,14 @@
 package com.example.demo.controller.admin;
 
+import com.example.demo.dto.customer.CustomerDTO;
 import com.example.demo.dto.product.ProductRequest;
 import com.example.demo.model.Products;
+import com.example.demo.model.User;
 import com.example.demo.service.admin.AdminService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,4 +65,41 @@ public class AdminController {
         adminService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully");
     }
+
+    // GET -All customer api by Role
+//    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/customers")
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+        List<CustomerDTO> customers = adminService.getAllCustomers();
+        return ResponseEntity.ok(customers);
+    }
+
+    @PutMapping("/customersEdit/{id}")
+    public ResponseEntity<CustomerDTO> updateCustomer(
+            @PathVariable Long id,
+            @RequestBody CustomerDTO dto) {
+
+        System.out.println("Updating customer ID: " + id);
+        System.out.println("Payload: " + dto);
+
+
+        CustomerDTO updatedCustomer = adminService.updateCustomer(id, dto);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+
+    @DeleteMapping("/customersDelete/{id}")
+    public ResponseEntity<String> hardDeleteCustomer(@PathVariable Long id) {
+
+        adminService.hardDeleteCustomer(id);
+        return ResponseEntity.ok("Customer deleted permanently");
+    }
+
+    @GetMapping("/customers/{id}")
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
+
+        CustomerDTO customer = adminService.getCustomerById(id);
+        return ResponseEntity.ok(customer);
+    }
+
 }
