@@ -156,10 +156,12 @@
 
 package com.example.demo.controller.admin;
 
+import com.example.demo.dto.customer.CustomerDTO;
 import com.example.demo.dto.product.ProductRequest;
 import com.example.demo.dto.product.ProductResponse;
 import com.example.demo.model.Products;
 import com.example.demo.service.admin.AdminService;
+import com.example.demo.service.admin.order.AdminCustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -177,6 +179,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private AdminCustomerService customerService;
 
     // CREATE - Add new product
     @PostMapping("/add")
@@ -209,11 +214,18 @@ public class AdminController {
     }
 
     // DELETE - Delete a product by ID
-    @DeleteMapping("/delete/{id}")
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         adminService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully");
     }
+
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+//        adminService.deleteProduct(id);
+//        return ResponseEntity.ok("Product deleted successfully");
+//    }
 
     // UPLOAD PRODUCT IMAGES
     @PostMapping("/{id}/images")
@@ -257,4 +269,49 @@ public class AdminController {
         List<ProductResponse> products = adminService.getProductsByStatus(status);
         return ResponseEntity.ok(products);
     }
+
+
+
+
+
+
+
+//    customer Part API
+
+    @GetMapping("/customers")
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+        List<CustomerDTO> customers = customerService.getAllCustomers();
+        return ResponseEntity.ok(customers);
+    }
+
+    @PutMapping("/customersEdit/{id}")
+    public ResponseEntity<CustomerDTO> updateCustomer(
+            @PathVariable Long id,
+            @RequestBody CustomerDTO dto) {
+
+        System.out.println("Updating customer ID: " + id);
+        System.out.println("Payload: " + dto);
+
+
+        CustomerDTO updatedCustomer = customerService.updateCustomer(id, dto);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+
+    @DeleteMapping("/customersDelete/{id}")
+    public ResponseEntity<String> hardDeleteCustomer(@PathVariable Long id) {
+
+        customerService.hardDeleteCustomer(id);
+        return ResponseEntity.ok("Customer deleted permanently");
+    }
+
+    @GetMapping("/customers/{id}")
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
+
+        CustomerDTO customer = customerService.getCustomerById(id);
+        return ResponseEntity.ok(customer);
+    }
+
+
+
 }

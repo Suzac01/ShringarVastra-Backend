@@ -65,4 +65,5 @@ public interface AdminService {
     Categories getCategoryById(Long id);
     Categories updateCategory(Long id, CategoryRequest request, MultipartFile imageFile) throws IOException;
     void deleteCategory(Long id);
+
 }
