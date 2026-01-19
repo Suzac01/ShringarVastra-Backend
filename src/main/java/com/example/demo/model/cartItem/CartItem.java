@@ -4,6 +4,8 @@ import com.example.demo.model.Products;
 import com.example.demo.model.User;
 import com.example.demo.model.order.Order;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,6 +20,8 @@ public class CartItem {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // Add getter for product
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Products product;
@@ -36,6 +40,14 @@ public class CartItem {
     @Column(name = "ordered_at")
     private LocalDateTime orderedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;  // Add this relationship
+
+    public Order getOrder() {
+        return order;
+    }
+
     // Constructors
     public CartItem() {}
 
@@ -50,6 +62,10 @@ public class CartItem {
         } catch (NullPointerException e) {
             this.price = 0.0; // default fallback price
         }
+    }
+
+    public Long getProductId() {
+        return this.product != null ? this.product.getId() : null;
     }
 
     // Getters and Setters
@@ -131,3 +147,5 @@ public class CartItem {
         // Implement if needed, else can remove
     }
 }
+
+

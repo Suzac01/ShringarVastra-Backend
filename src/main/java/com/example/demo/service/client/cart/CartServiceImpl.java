@@ -24,12 +24,36 @@ public class CartServiceImpl implements CartService {
     private UserRepository userRepository;
 
 
+//    @Override
+//    public void addToCart(String userEmail, Long productId, int quantity) {
+//        User user = userRepository.findByEmail(userEmail)
+//                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+//        Products product = productRepository.findById(productId)
+//                .orElseThrow(() -> new RuntimeException("Product not found"));
+//
+//        CartItem cartItem = new CartItem();
+//        cartItem.setUser(user);
+//        cartItem.setProduct(product);
+//        cartItem.setQuantity(quantity);
+//        cartItem.setProductName(product.getProductName());
+//        cartItem.setImageUrl(product.getProductImage());
+//        try {
+//            cartItem.setPrice((product.getProductPrice()));
+//        } catch (Exception e) {
+//            cartItem.setPrice(0.0);
+//        }
+//        cartItem.setOrdered(false);
+//
+//        cartItemRepository.save(cartItem);
+//    }
+
     @Override
-    public void addToCart(String userEmail, Long productId, int quantity) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+    public void addToCart(Long userId, Long productId, int quantity) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
         Products product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
 
         CartItem cartItem = new CartItem();
         cartItem.setUser(user);
@@ -37,15 +61,12 @@ public class CartServiceImpl implements CartService {
         cartItem.setQuantity(quantity);
         cartItem.setProductName(product.getProductName());
         cartItem.setImageUrl(product.getProductImage());
-        try {
-            cartItem.setPrice((product.getProductPrice()));
-        } catch (Exception e) {
-            cartItem.setPrice(0.0);
-        }
+        cartItem.setPrice(product.getProductPrice());
         cartItem.setOrdered(false);
 
         cartItemRepository.save(cartItem);
     }
+
 
     @Override
     public List<CartItem> getUserCart(Long userId) {

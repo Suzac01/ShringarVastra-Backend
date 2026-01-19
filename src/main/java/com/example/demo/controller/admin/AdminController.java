@@ -270,12 +270,6 @@ public class AdminController {
         return ResponseEntity.ok(products);
     }
 
-
-
-
-
-
-
 //    customer Part API
 
     @GetMapping("/customers")
@@ -311,7 +305,4 @@ public class AdminController {
         CustomerDTO customer = customerService.getCustomerById(id);
         return ResponseEntity.ok(customer);
     }
-
-
-
 }
