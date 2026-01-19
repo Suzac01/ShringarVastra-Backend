@@ -14,17 +14,21 @@ public class CartController {
     @Autowired
     private CartService cartService;
 //    Cart CRUD Operations.
-    @PostMapping("/add")
-    public String addToCart(@RequestBody AddToCartRequest request) {
+@PostMapping("/add")
+public String addToCart(@RequestBody AddToCartRequest request) {
 
-        System.out.println("userId = " + request.getUserId());
-        System.out.println("productId = " + request.getProductId());
-        System.out.println("quantity = " + request.getQuantity());
+    System.out.println("userId = " + request.getUserId());
+    System.out.println("productId = " + request.getProductId());
+    System.out.println("quantity = " + request.getQuantity());
 
-        cartService.addToCart(request.getUserEmail(), request.getProductId(), request.getQuantity());
+    cartService.addToCart(
+            request.getUserId(),
+            request.getProductId(),
+            request.getQuantity()
+    );
 
-        return "Item added to cart.";
-    }
+    return "Item added to cart.";
+}
 
     @GetMapping("get/{userId}")
     public List<CartItem> getUserCart(@PathVariable Long userId) {
