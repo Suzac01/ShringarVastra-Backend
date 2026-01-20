@@ -25,12 +25,21 @@ public class AdminOrderController {
         return ResponseEntity.ok("Order created successfully.");
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<OrderResponseDto>> getAllOrders(){
+        List<OrderResponseDto> orders = adminOrderService.getAllOrders();
+        return ResponseEntity.ok(orders);
+
+    }
+
     @GetMapping("/clientOrders")
     public ResponseEntity<List<OrderResponseDto>> getOrdersByClientEmail(
             @RequestParam String clientEmail) {
         List<OrderResponseDto> orders = adminOrderService.getOrdersByClientEmail(clientEmail);
         return ResponseEntity.ok(orders);
     }
+
+
 
     @GetMapping("/details/{orderId}")
     public ResponseEntity<OrderDetailsDto> getOrderDetails(

@@ -344,6 +344,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.hibernate.validator.internal.util.CollectionHelper.newArrayList;
+
 @Service
 @Transactional
 public class AdminOrderServiceImpl implements AdminOrderService {
@@ -416,6 +418,70 @@ public class AdminOrderServiceImpl implements AdminOrderService {
                 ", Items=" + cartItems.size() +
                 ", Total=" + totalAmount);
     }
+
+    @Override
+    public List<OrderResponseDto> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+
+        if (orders.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<OrderResponseDto> response = new ArrayList<>();
+
+        for (Order order : orders) {
+            // FIX: Use orderItemRepository instead of orderRepository
+            List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
+
+            OrderResponseDto dto = new OrderResponseDto();
+
+            // Set basic order info
+            dto.setOrderId(order.getId());
+            dto.setStatus(order.getStatus());
+            dto.setOrderDate(order.getOrderDate() != null ? order.getOrderDate() : order.getCreatedAt());
+            dto.setShippingAddress(order.getShippingAddress());
+            dto.setPaymentMethod(order.getPaymentMethod());
+            dto.setClientEmail(order.getClientEmail());
+
+            // REMOVED: setCustomerName() - This field doesn't exist in OrderResponseDto
+
+            // Calculate totals from order items
+            double total = 0.0;
+            int totalQuantity = 0;
+            String firstProductName = null;
+
+            if (!orderItems.isEmpty()) {
+                for (OrderItem item : orderItems) {
+                    double itemPrice = item.getPrice() != null ? item.getPrice() : 0.0;
+                    total += itemPrice * item.getQuantity();
+                    totalQuantity += item.getQuantity();
+
+                    if (firstProductName == null) {
+                        firstProductName = item.getProductName();
+                    }
+                }
+                dto.setProductName(firstProductName);
+                dto.setQuantity(totalQuantity);
+            }
+
+            // Set the calculated totals - choose one of these based on your DTO:
+            // If you want to use totalAmount field:
+            dto.setTotalAmount(total);
+
+            // Or if you want to use totalPrice field:
+            dto.setTotalPrice(total);
+
+            // Set the ordered date
+            dto.setOrderedAt(order.getCreatedAt());
+
+            response.add(dto);
+        }
+
+        return response;
+    }
+
+
+
 
     @Override
     public List<OrderResponseDto> getOrdersByClientEmail(String clientEmail) {

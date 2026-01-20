@@ -12,8 +12,10 @@ public interface AdminOrderService {
     void createOrder(OrderRequestDto orderRequest, String clientEmail);
 
 
-    List<OrderResponseDto> getOrdersByClientEmail(String clientEmail);
+        List<OrderResponseDto> getOrdersByClientEmail(String clientEmail);
         OrderDetailsDto getOrderDetails(Long orderId, String clientEmail);
         void cancelOrder(Long orderId, String clientEmail);
+
+        List<OrderResponseDto> getAllOrders();
 
 }
