@@ -256,7 +256,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -272,6 +274,9 @@ public class AdminProductServiceImpl implements AdminService {
     @Value("${app.upload.dir:uploads}")
     private String uploadDir;
 
+    private static final String UPLOAD_DIR = "uploads/productsImg/";
+
+
     // ===== PRODUCT METHODS =====
 
     @Override
@@ -282,7 +287,6 @@ public class AdminProductServiceImpl implements AdminService {
 
     @Override
     public ProductResponse saveProduct(ProductRequest request) {
-        // Check if SKU already exists
         if (productRepository.existsBySku(request.getSku())) {
             throw new RuntimeException("SKU already exists: " + request.getSku());
         }
@@ -290,18 +294,22 @@ public class AdminProductServiceImpl implements AdminService {
         Products product = new Products();
         mapProductDtoToEntity(request, product);
 
-        // Handle product image (take first image if available)
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            // Store first image as main product image
-            product.setProductImage(request.getImages().get(0));
+        Products saved = productRepository.save(product);
+        return mapEntityToResponse(saved);
+    }
 
-            // Store all images in tags (including main image)
-            List<String> allImages = new ArrayList<>(request.getImages());
-            product.setTags(allImages);
+
+
+    private String saveImage(MultipartFile file) {
+        try {
+            Files.createDirectories(Paths.get(UPLOAD_DIR));
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            Files.write(path, file.getBytes());
+            return "productsImg/" + fileName; // relative path to store in DB
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store image", e);
         }
-
-        Products savedProduct = productRepository.save(product);
-        return mapEntityToResponse(savedProduct);
     }
 
 //    @Override
@@ -324,27 +332,26 @@ public class AdminProductServiceImpl implements AdminService {
         Products product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + id));
 
-        // Check if SKU is being changed and if new SKU already exists
+        // Check SKU
         if (request.getSku() != null && !product.getSku().equals(request.getSku()) &&
                 productRepository.existsBySku(request.getSku())) {
             throw new RuntimeException("SKU already exists: " + request.getSku());
         }
 
+        // Map other fields
         mapProductDtoToEntity(request, product);
 
-        // Handle product image update
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            // Store first image as main product image
-            product.setProductImage(request.getImages().get(0));
-
-            // Store all images in tags
-            List<String> allImages = new ArrayList<>(request.getImages());
-            product.setTags(allImages);
+        // Handle image
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            String savedPath = saveImage(request.getImage()); // save to disk
+            product.setProductImage(savedPath);               // main image
+            product.setTags(List.of(savedPath));              // optional tags
         }
 
         Products updatedProduct = productRepository.save(product);
         return mapEntityToResponse(updatedProduct);
     }
+
 
     @Override
     public void deleteProduct(Long id) {
@@ -372,7 +379,7 @@ public class AdminProductServiceImpl implements AdminService {
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
                 Path filePath = uploadPath.resolve(fileName);
                 file.transferTo(filePath.toFile());
-                String imageUrl = "/uploads/products/" + fileName;
+                String imageUrl = "/uploads/productsImg/" + fileName;
                 imageUrls.add(imageUrl);
             }
         }
@@ -450,19 +457,12 @@ public class AdminProductServiceImpl implements AdminService {
     }
 
     private void mapProductDtoToEntity(ProductRequest request, Products product) {
-        // Use correct getter methods based on DTO field names
-        product.setProductName(request.getName()); // Changed from getProductName() to getName()
+        product.setProductName(request.getName());
         product.setSku(request.getSku());
-        product.setProductPrice(request.getPrice()); // Changed from getProductPrice() to getPrice()
+        product.setProductPrice(request.getPrice());
         product.setBrand(request.getBrand());
         product.setStatus(request.getStatus());
         product.setDescription(request.getDescription());
-
-        // Handle images - assuming you store first image URL in product_image
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            product.setProductImage(request.getImages().get(0)); // Store first image
-        }
-
         product.setStockQuantity(request.getStockQuantity() != null ? request.getStockQuantity() : 0);
         product.setWeight(request.getWeight());
         product.setRating(request.getRating());
@@ -471,6 +471,15 @@ public class AdminProductServiceImpl implements AdminService {
         product.setDimensions(request.getDimensions());
         product.setIsFeatured(request.getIsFeatured() != null ? request.getIsFeatured() : false);
 
+        // Handle single image
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            String savedPath = saveImage(request.getImage());
+            product.setProductImage(savedPath);
+
+            // Optional: add to tags
+            product.setTags(List.of(savedPath));
+        }
+
         // Handle category
         if (request.getCategoryId() != null) {
             Categories category = categoryRepository.findById(request.getCategoryId())
@@ -478,6 +487,7 @@ public class AdminProductServiceImpl implements AdminService {
             product.setCategory(category);
         }
     }
+
 
     private ProductResponse mapEntityToResponse(Products product) {
         ProductResponse response = new ProductResponse();

@@ -16,7 +16,7 @@ public class ProductResponse {
     private String description;
     private Categories category;
     private List<String> tags;
-    private List<String> productImage;
+    private List<String> productImage; // instead of String
     private Integer stockQuantity;
     private Double weight;
     private String dimensions;
