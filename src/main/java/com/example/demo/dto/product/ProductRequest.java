@@ -37,8 +37,7 @@ public class ProductRequest {
     // From frontend: tags, images
     private List<String> tags;
 
-    @NotNull(message = "At least one image is required")
-    @Size(min = 1, message = "At least one image is required")
+
     private List<String> images;
 
     // Optional fields

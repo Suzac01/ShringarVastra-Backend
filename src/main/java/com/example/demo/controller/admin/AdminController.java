@@ -228,13 +228,15 @@ public class AdminController {
 //    }
 
     // UPLOAD PRODUCT IMAGES
-    @PostMapping("/{id}/images")
-    public ResponseEntity<ProductResponse> uploadImages(
-            @PathVariable Long id,
-            @RequestParam("images") List<MultipartFile> imageFiles) throws IOException {
-        ProductResponse updatedProduct = adminService.uploadProductImages(id, imageFiles);
-        return ResponseEntity.ok(updatedProduct);
+    @PostMapping("/{productId}/images")
+    public ResponseEntity<ProductResponse> uploadProductImages(
+            @PathVariable Long productId,
+            @RequestParam("images") List<MultipartFile> images
+    ) throws IOException {
+        ProductResponse response = adminService.uploadProductImages(productId, images);
+        return ResponseEntity.ok(response);
     }
+
 
     // DELETE PRODUCT IMAGE
     @DeleteMapping("/{productId}/images/{imageIndex}")
