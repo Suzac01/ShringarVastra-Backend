@@ -221,11 +221,6 @@ public class AdminController {
         return ResponseEntity.ok("Product deleted successfully");
     }
 
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
-//        adminService.deleteProduct(id);
-//        return ResponseEntity.ok("Product deleted successfully");
-//    }
 
     // UPLOAD PRODUCT IMAGES
     @PostMapping("/{id}/images")
