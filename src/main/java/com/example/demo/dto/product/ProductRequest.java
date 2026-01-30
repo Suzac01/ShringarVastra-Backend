@@ -2,6 +2,8 @@ package com.example.demo.dto.product;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Data
@@ -24,7 +26,15 @@ public class ProductRequest {
     private String brand;
 
     @NotBlank(message = "Status is required")
-    private String status; // ACTIVE, INACTIVE, DRAFT, OUT_OF_STOCK
+    private String status;
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
+    }
 
     @NotBlank(message = "Description is required")
     @Size(max = 1000, message = "Description cannot exceed 1000 characters")
@@ -37,9 +47,7 @@ public class ProductRequest {
     // From frontend: tags, images
     private List<String> tags;
 
-    @NotNull(message = "At least one image is required")
-    @Size(min = 1, message = "At least one image is required")
-    private List<String> images;
+   private MultipartFile image;
 
     // Optional fields
     private Integer stockQuantity;

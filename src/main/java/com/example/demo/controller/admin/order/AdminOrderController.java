@@ -18,9 +18,9 @@ public class AdminOrderController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<String> createOrder(
-            @RequestBody OrderRequestDto orderRequest,
-            @RequestParam String clientEmail) {
+    public ResponseEntity<String> createOrder(@RequestBody OrderRequestDto orderRequest) {
+        // Get clientEmail from the DTO instead of @RequestParam
+        String clientEmail = orderRequest.getClientEmail();
         adminOrderService.createOrder(orderRequest, clientEmail);
         return ResponseEntity.ok("Order created successfully.");
     }

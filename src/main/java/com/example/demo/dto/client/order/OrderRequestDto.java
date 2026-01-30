@@ -80,6 +80,7 @@ package com.example.demo.dto.client.order;
 import java.util.List;
 
 public class OrderRequestDto {
+    private String clientEmail;
     private String shippingAddress;
     private String paymentMethod;
     private String additionalNote;
@@ -97,6 +98,14 @@ public class OrderRequestDto {
 
     public List<OrderItemDto> getItems() { return items; }  // Changed getter
     public void setItems(List<OrderItemDto> items) { this.items = items; }  // Changed setter
+
+    public String getClientEmail() {
+        return clientEmail;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
+    }
 }
 
 class OrderItemDto {
