@@ -241,6 +241,7 @@ import com.example.demo.dto.CategoryRequest.CategoryRequest;
 import com.example.demo.dto.product.ProductRequest;
 import com.example.demo.dto.product.ProductResponse;
 import com.example.demo.model.Categories;
+
 import com.example.demo.model.Products;
 import com.example.demo.repository.categoryRepository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
@@ -256,6 +257,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -356,41 +358,55 @@ public class AdminProductServiceImpl implements AdminService {
 
     @Override
     public ProductResponse uploadProductImages(Long productId, List<MultipartFile> imageFiles) throws IOException {
+
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
 
-        // Create upload directory if it doesn't exist
-        Path uploadPath = Paths.get(uploadDir + "/products");
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+        String uploadDir = System.getProperty("user.dir")
+                + File.separator + "uploads"
+                + File.separator + "productsImg";
+
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
 
-        // Save each image and store URLs in tags
         List<String> imageUrls = new ArrayList<>();
+
         for (MultipartFile file : imageFiles) {
-            if (!file.isEmpty() && file.getOriginalFilename() != null) {
+            if (file != null && !file.isEmpty()) {
+
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                Path filePath = uploadPath.resolve(fileName);
-                file.transferTo(filePath.toFile());
-                String imageUrl = "/uploads/products/" + fileName;
-                imageUrls.add(imageUrl);
+                File destination = new File(uploadDir + File.separator + fileName);
+
+                file.transferTo(destination);
+
+                imageUrls.add(fileName);
             }
         }
 
-        // Add image URLs to tags (or you could create a separate entity for images)
-        if (product.getTags() == null) {
-            product.setTags(new ArrayList<>());
-        }
-        product.getTags().addAll(imageUrls);
+        product.setImages(imageUrls); // or tags
+        productRepository.save(product);
 
-        // Also set the first image as main product image
-        if (!imageUrls.isEmpty()) {
-            product.setProductImage(imageUrls.get(0));
-        }
-
-        Products updatedProduct = productRepository.save(product);
-        return mapEntityToResponse(updatedProduct);
+        return mapToResponse(product);
     }
+
+        private ProductResponse mapToResponse(Products product) {
+
+            ProductResponse response = new ProductResponse();
+            response.setId(product.getId());
+            response.setProductName(product.getProductName());
+            response.setProductPrice(product.getProductPrice());
+            response.setProductImage(Collections.singletonList(product.getProductImage()));
+            response.setDescription(product.getDescription());
+            response.setStatus(product.getStatus());
+            response.setIsFeatured(product.getIsFeatured());
+
+            return response;
+        }
+
+
+
 
     @Override
     public ProductResponse deleteProductImage(Long productId, String imageUrl) {

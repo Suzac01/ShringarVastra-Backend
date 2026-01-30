@@ -237,6 +237,15 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Products {
 
+    @ElementCollection
+    @CollectionTable(
+            name = "productImages",
+            joinColumns = @JoinColumn(name = "product_id")
+    )
+
+    @Column(name = "images_name")
+    private List<String> images;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -252,6 +261,14 @@ public class Products {
 
     @Column(length = 1000)
     private String description;
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
 
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
@@ -294,6 +311,8 @@ public class Products {
     @JoinColumn(name = "category_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Categories category;
+
+
 
     // Constructors
     public Products() {}
