@@ -221,11 +221,6 @@ public class AdminController {
         return ResponseEntity.ok("Product deleted successfully");
     }
 
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
-//        adminService.deleteProduct(id);
-//        return ResponseEntity.ok("Product deleted successfully");
-//    }
 
     // UPLOAD PRODUCT IMAGES
     @PostMapping("/{productId}/images")
@@ -272,12 +267,6 @@ public class AdminController {
         return ResponseEntity.ok(products);
     }
 
-
-
-
-
-
-
 //    customer Part API
 
     @GetMapping("/customers")
@@ -313,7 +302,4 @@ public class AdminController {
         CustomerDTO customer = customerService.getCustomerById(id);
         return ResponseEntity.ok(customer);
     }
-
-
-
 }

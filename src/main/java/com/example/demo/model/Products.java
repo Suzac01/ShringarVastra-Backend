@@ -256,8 +256,7 @@ public class Products {
     @Column(name = "product_price", nullable = false)
     private Double productPrice;
 
-    @Column(name = "product_image")
-    private String productImage;
+
 
     @Column(length = 1000)
     private String description;
@@ -306,6 +305,17 @@ public class Products {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "product_image")
+    private String productImage;
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
     // ✅ Fixed: Add proper category mapping and getter/setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -320,7 +330,6 @@ public class Products {
     public Products(String productName, Double productPrice, String productImage) {
         this.productName = productName;
         this.productPrice = productPrice;
-        this.productImage = productImage;
     }
 
     // Getters and Setters
@@ -349,13 +358,7 @@ public class Products {
         this.productPrice = productPrice;
     }
 
-    public String getProductImage() {
-        return productImage;
-    }
 
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
-    }
 
     public String getDescription() {
         return description;
