@@ -37,13 +37,18 @@ public class AdminServiceCustomerImpl implements AdminCustomerService {
 
     @Override
     public List<CustomerDTO> getAllCustomers() {
-        // fetch all users with role CLIENT
+
         List<User> users = userRepository.findByRole(Role.ROLE_CLIENT);
 
         return users.stream().map(user -> {
-            // fetch address by email
-            Address address = addressRepository.findByEmail(user.getEmail()).orElse(null);
-            String phone = (address != null) ? address.getPhone() : "N/A"; // fallback if no phone
+
+            // NOW returns List<Address>
+            List<Address> addresses = addressRepository.findByEmail(user.getEmail());
+
+            // take first address if exists
+            Address address = addresses.isEmpty() ? null : addresses.get(0);
+
+            String phone = (address != null) ? address.getPhone() : "N/A";
 
             return new CustomerDTO(
                     user.getId(),
@@ -53,6 +58,7 @@ public class AdminServiceCustomerImpl implements AdminCustomerService {
             );
         }).collect(Collectors.toList());
     }
+
 
     @Override
     public CustomerDTO updateCustomer(Long id, CustomerDTO dto) {
@@ -95,15 +101,14 @@ public class AdminServiceCustomerImpl implements AdminCustomerService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
 
-        // Ensure this user is a CLIENT
         if (user.getRole() != Role.ROLE_CLIENT) {
             throw new RuntimeException("User is not a customer");
         }
 
-        // Fetch address using email (same logic as getAllCustomers)
-        Address address = addressRepository
-                .findByEmail(user.getEmail())
-                .orElse(null);
+        // NOW returns List<Address>
+        List<Address> addresses = addressRepository.findByEmail(user.getEmail());
+
+        Address address = addresses.isEmpty() ? null : addresses.get(0);
 
         String phone = (address != null) ? address.getPhone() : "N/A";
 
@@ -114,6 +119,7 @@ public class AdminServiceCustomerImpl implements AdminCustomerService {
                 phone
         );
     }
+
 
     private void mapDtoToEntity(ProductRequest request, Products product) {
         product.setProductName(request.getName());
