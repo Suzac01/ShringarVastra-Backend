@@ -11,4 +11,15 @@ public interface AuthService {
 
     User loginOrRegister(Google google);
 
+    String generateResetPasswordToken(String email);
+
+    boolean validateResetToken(String token);
+
+    void resetPassword(String token, String newPassword);
+
+    User findByEmail(String email);
+
+    User findByResetToken(String token);
+
+    User updateUser(User user);
 }

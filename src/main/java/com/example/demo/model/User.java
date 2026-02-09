@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -44,6 +45,15 @@ public class User implements UserDetails {
     @NotNull(message = "Role is required")
     private Role role;
 
+    @JsonIgnore
+    private String resetPasswordToken;
+
+    @JsonIgnore
+    private LocalDateTime resetPasswordTokenExpiry;
+
+    @JsonIgnore
+    private LocalDateTime passwordLastChanged;
+
     public String getProvider() {
         return provider;
     }
@@ -62,6 +72,22 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public LocalDateTime getResetPasswordTokenExpiry() {
+        return resetPasswordTokenExpiry;
+    }
+
+    public void setResetPasswordTokenExpiry(LocalDateTime resetPasswordTokenExpiry) {
+        this.resetPasswordTokenExpiry = resetPasswordTokenExpiry;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 
     @Override
