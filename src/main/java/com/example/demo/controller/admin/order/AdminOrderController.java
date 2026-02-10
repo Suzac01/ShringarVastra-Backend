@@ -57,13 +57,13 @@ public class AdminOrderController {
         return ResponseEntity.ok(details);
     }
 
-//    @PutMapping("/cancel/{orderId}")
-//    public ResponseEntity<String> cancelOrder(
-//            @PathVariable Long orderId,
-//            @RequestParam String clientEmail) {
-//        adminOrderService.cancelOrder(orderId, clientEmail);
-//        return ResponseEntity.ok("Order cancelled successfully.");
-//    }
+    @PutMapping("/cancel/{orderId}")
+    public ResponseEntity<String> cancelOrder(
+            @PathVariable Long orderId,
+            @RequestParam String clientEmail) {
+        adminOrderService.cancelOrder(orderId, clientEmail);
+        return ResponseEntity.ok("Order cancelled successfully.");
+    }
 
     @PostMapping("/send-confirmation")
     public ResponseEntity<?> sendOrderConfirmation(@RequestBody OrderConfirmationDTO orderConfirmation) {
