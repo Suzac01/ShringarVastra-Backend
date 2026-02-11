@@ -481,8 +481,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     }
 
 
-
-
     @Override
     public List<OrderResponseDto> getOrdersByClientEmail(String clientEmail) {
         List<Order> orders = orderRepository.findByClientEmail(clientEmail);
@@ -591,5 +589,25 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 
         System.out.println("Order cancelled: ID=" + orderId);
     }
+
+//    update status
+    @Override
+    public void updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // Optional validation
+        if (!status.equalsIgnoreCase("PENDING") &&
+                !status.equalsIgnoreCase("COMPLETED") &&
+                !status.equalsIgnoreCase("CANCELLED")) {
+            throw new RuntimeException("Invalid status value");
+        }
+
+        order.setStatus(status.toUpperCase());
+        orderRepository.save(order);
+
+        System.out.println("Order status updated: ID=" + orderId + " -> " + status);
+    }
+
 }
 

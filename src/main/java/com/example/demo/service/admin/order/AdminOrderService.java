@@ -17,5 +17,6 @@ public interface AdminOrderService {
         void cancelOrder(Long orderId, String clientEmail);
 
         List<OrderResponseDto> getAllOrders();
+        void updateOrderStatus(Long orderId, String status);
 
 }

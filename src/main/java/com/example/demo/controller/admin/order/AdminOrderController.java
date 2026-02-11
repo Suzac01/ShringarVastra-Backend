@@ -3,6 +3,7 @@ package com.example.demo.controller.admin.order;
 import com.example.demo.dto.client.order.OrderDetailsDto;
 import com.example.demo.dto.client.order.OrderRequestDto;
 import com.example.demo.dto.client.order.OrderResponseDto;
+import com.example.demo.dto.client.order.UpdateOrderStatusDto;
 import com.example.demo.dto.client.order.orderConfirmationDTO.OrderConfirmationDTO;
 import com.example.demo.service.admin.order.AdminOrderService;
 import com.example.demo.service.emailService.EmailService;
@@ -106,6 +107,23 @@ public class AdminOrderController {
         errorResponse.put("message", message);
         return errorResponse;
     }
+
+    @PutMapping("/status/{orderId}")
+    public ResponseEntity<?> updateOrderStatus(
+            @PathVariable Long orderId,
+            @RequestBody UpdateOrderStatusDto dto) {
+
+        adminOrderService.updateOrderStatus(orderId, dto.getStatus());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Order status updated");
+        response.put("orderId", orderId);
+        response.put("newStatus", dto.getStatus());
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 
 
