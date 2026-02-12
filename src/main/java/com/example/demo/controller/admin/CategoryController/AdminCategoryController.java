@@ -92,6 +92,8 @@ public class AdminCategoryController {
 
     }
 
+
+
     @PostMapping("/delete/{id}")
     public ResponseEntity<Map<String, String>> deleteCategory(@PathVariable Long id) {
         try {
@@ -120,6 +122,36 @@ public class AdminCategoryController {
             errorResponse.put("status", "error");
             errorResponse.put("message", "Failed to delete category: " + e.getMessage());
 
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    // ✅ UPDATE CATEGORY
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateCategory(
+            @PathVariable Long id,
+            @Valid @ModelAttribute CategoryRequest request) throws IOException {
+
+        try {
+            Categories updated = adminService.updateCategory(id, request, request.getImage());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "Category updated successfully");
+            response.put("category", updated);
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", "error");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", "error");
+            errorResponse.put("message", "Failed to update category: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }

@@ -18,11 +18,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -319,6 +318,8 @@ public class AdminProductServiceImpl implements AdminService {
         Categories category = new Categories();
         category.setCategoryName(request.getCategoryName());
         category.setDescription(request.getDescription());
+        category.setTitle(request.getTitle());  // ADD THIS LINE
+        category.setCreatedDate(LocalDateTime.now());
 
         MultipartFile imageFile = request.getImage();
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -340,20 +341,65 @@ public class AdminProductServiceImpl implements AdminService {
                 .orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
     }
 
+
+
     @Override
     public Categories updateCategory(Long id, CategoryRequest request, MultipartFile imageFile) throws IOException {
+        // Find existing category
         Categories category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
 
-        category.setCategoryName(request.getCategoryName());
-        category.setDescription(request.getDescription());
-
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = saveCategoryImage(imageFile);
-            category.setImage(imageUrl);
+        // Update fields if provided (only update non-null values)
+        if (request.getCategoryName() != null && !request.getCategoryName().isEmpty()) {
+            category.setCategoryName(request.getCategoryName());
         }
 
+        if (request.getDescription() != null) {
+            category.setDescription(request.getDescription());
+        }
+
+        if (request.getTitle() != null) {
+            category.setTitle(request.getTitle());
+        }
+
+        // Handle image update if new image is provided
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Delete old image file if exists
+            if (category.getImage() != null) {
+                deleteCategoryImageFile(category.getImage());
+            }
+
+            // Save new image
+            String fileName = saveCategoryImage(imageFile);
+            category.setImage(fileName);
+        }
+
+        // Update timestamp
+        category.setUpdatedDate(LocalDateTime.now());
+
         return categoryRepository.save(category);
+    }
+
+    private void deleteCategoryImageFile(String fileName) {
+        try {
+            if (fileName != null && !fileName.isEmpty()) {
+                String uploadDir = System.getProperty("user.dir")
+                        + File.separator + "uploads"
+                        + File.separator + "categories";
+
+                File file = new File(uploadDir + File.separator + fileName);
+                if (file.exists()) {
+                    boolean deleted = file.delete();
+                    if (deleted) {
+                        System.out.println("Deleted old category image: " + fileName);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to delete category image file: " + fileName);
+            e.printStackTrace();
+            // Don't throw exception - continue with update even if image deletion fails
+        }
     }
 
     @Override
