@@ -58,11 +58,10 @@
 //    }
 //}
 
-
 package com.example.demo.dto.CategoryRequest;
 
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.validation.constraints.NotBlank;
 
 public class CategoryRequest {
 
@@ -71,17 +70,21 @@ public class CategoryRequest {
 
     private String description;
 
+    private String title;  // ADD THIS FIELD
+
     private MultipartFile image;
 
-    public MultipartFile getImage() {
-        return image;
-    }
+    // Constructors
+    public CategoryRequest() {}
 
-    public void setImage(MultipartFile image) {
+    public CategoryRequest(String categoryName, String description, String title, MultipartFile image) {
+        this.categoryName = categoryName;
+        this.description = description;
+        this.title = title;
         this.image = image;
     }
 
-    // getters & setters
+    // Getters and Setters
     public String getCategoryName() {
         return categoryName;
     }
@@ -96,5 +99,21 @@ public class CategoryRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTitle() {  // ADD THIS GETTER
+        return title;
+    }
+
+    public void setTitle(String title) {  // ADD THIS SETTER
+        this.title = title;
+    }
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
     }
 }
